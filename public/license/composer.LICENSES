@@ -1,0 +1,75 @@
+{
+    "name": "opensourcepos/opensourcepos",
+    "version": "dev-master 632d4ea",
+    "license": [
+        "MIT"
+    ],
+    "dependencies": {
+        "codeigniter4/framework": {
+            "version": "v4.7.2",
+            "license": [
+                "MIT"
+            ]
+        },
+        "dompdf/dompdf": {
+            "version": "v2.0.8",
+            "license": [
+                "LGPL-2.1"
+            ]
+        },
+        "ezyang/htmlpurifier": {
+            "version": "v4.19.0",
+            "license": [
+                "LGPL-2.1-or-later"
+            ]
+        },
+        "laminas/laminas-escaper": {
+            "version": "2.18.0",
+            "license": [
+                "BSD-3-Clause"
+            ]
+        },
+        "masterminds/html5": {
+            "version": "2.10.0",
+            "license": [
+                "MIT"
+            ]
+        },
+        "paragonie/random_compat": {
+            "version": "v2.0.21",
+            "license": [
+                "MIT"
+            ]
+        },
+        "phenx/php-font-lib": {
+            "version": "0.5.6",
+            "license": [
+                "LGPL-2.1-or-later"
+            ]
+        },
+        "phenx/php-svg-lib": {
+            "version": "0.5.4",
+            "license": [
+                "LGPL-3.0-or-later"
+            ]
+        },
+        "picqer/php-barcode-generator": {
+            "version": "v2.4.2",
+            "license": [
+                "LGPL-3.0-or-later"
+            ]
+        },
+        "sabberworm/php-css-parser": {
+            "version": "v8.9.0",
+            "license": [
+                "MIT"
+            ]
+        },
+        "tamtamchik/namecase": {
+            "version": "3.0.0",
+            "license": [
+                "MIT"
+            ]
+        }
+    }
+}

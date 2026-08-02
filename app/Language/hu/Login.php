@@ -1,0 +1,25 @@
+<?php
+
+return [
+    "gcaptcha"                      => "",
+    "go"                            => "Juhúúúúúú!",
+    "invalid_gcaptcha"              => "",
+    "invalid_installation"          => "",
+    "invalid_username_and_password" => "Érvénytelen felhasználói név vagy jelszó",
+    "login"                         => "Belépés",
+    "logout"                        => "",
+    "migration_needed"              => "",
+    "migration_required"            => "",
+    "migration_auth_message"        => "",
+    "migration_initializing"        => "",
+    "migration_running"             => "",
+    "migration_complete"            => "",
+    "migration_complete_login"      => "",
+    "migration_failed"              => "",
+    "migration_error_connection"    => "",
+    "migration_complete_redirect"   => "",
+    "password"                      => "Jelszó",
+    "required_username"             => "",
+    "username"                      => "Felhasználó név",
+    "welcome"                       => "",
+];
