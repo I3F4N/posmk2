@@ -569,9 +569,15 @@ class Config extends Secure_Controller
             'msg_uid' => $this->request->getPost('msg_uid'),
             'msg_pwd' => $password,
             'msg_src' => $this->request->getPost('msg_src'),
+            'whatsapp_api_provider' => $this->request->getPost('whatsapp_api_provider'),
+            'whatsapp_receipt_mode' => $this->request->getPost('whatsapp_receipt_mode'),
             'twilio_account_sid' => $this->request->getPost('twilio_account_sid'),
             'twilio_auth_token' => $this->request->getPost('twilio_auth_token'),
             'twilio_whatsapp_number' => $this->request->getPost('twilio_whatsapp_number'),
+            'meta_access_token' => $this->request->getPost('meta_access_token'),
+            'meta_phone_number_id' => $this->request->getPost('meta_phone_number_id'),
+            'meta_receipt_template' => $this->request->getPost('meta_receipt_template'),
+            'meta_marketing_template' => $this->request->getPost('meta_marketing_template'),
             'whatsapp_receipt_message' => $this->request->getPost('whatsapp_receipt_message')
         ];
 

@@ -75,6 +75,26 @@
                 </div>
             </div>
             <div class="form-group form-group-sm">
+                <?= form_label('WhatsApp API Provider', 'whatsapp_api_provider', ['class' => 'control-label col-xs-2']) ?>
+                <div class="col-xs-4">
+                    <?= form_dropdown('whatsapp_api_provider', [
+                        'twilio' => 'Twilio',
+                        'meta' => 'Meta Developer API'
+                    ], $config['whatsapp_api_provider'] ?? 'twilio', ['class' => 'form-control input-sm', 'id' => 'whatsapp_api_provider']) ?>
+                </div>
+            </div>
+
+            <div class="form-group form-group-sm">
+                <?= form_label('WhatsApp Receipt Mode', 'whatsapp_receipt_mode', ['class' => 'control-label col-xs-2']) ?>
+                <div class="col-xs-4">
+                    <?= form_dropdown('whatsapp_receipt_mode', [
+                        'manual' => 'Manual (Checkbox on Register)',
+                        'automatic' => 'Automatic (Sends Instantly)'
+                    ], $config['whatsapp_receipt_mode'] ?? 'manual', ['class' => 'form-control input-sm']) ?>
+                </div>
+            </div>
+
+            <div class="form-group form-group-sm twilio-fields">
                 <?= form_label('Twilio Account SID', 'twilio_account_sid', ['class' => 'control-label col-xs-2']) ?>
                 <div class="col-xs-4">
                     <?= form_input([
@@ -86,7 +106,7 @@
                 </div>
             </div>
 
-            <div class="form-group form-group-sm">
+            <div class="form-group form-group-sm twilio-fields">
                 <?= form_label('Twilio Auth Token', 'twilio_auth_token', ['class' => 'control-label col-xs-2']) ?>
                 <div class="col-xs-4">
                     <?= form_input([
@@ -98,7 +118,7 @@
                 </div>
             </div>
 
-            <div class="form-group form-group-sm">
+            <div class="form-group form-group-sm twilio-fields">
                 <?= form_label('Twilio WhatsApp Number', 'twilio_whatsapp_number', ['class' => 'control-label col-xs-2']) ?>
                 <div class="col-xs-4">
                     <?= form_input([
@@ -107,6 +127,34 @@
                         'class' => 'form-control input-sm',
                         'value' => $config['twilio_whatsapp_number'] ?? ''
                     ]) ?>
+                </div>
+            </div>
+
+            <div class="form-group form-group-sm meta-fields" style="display: none;">
+                <?= form_label('Meta Access Token', 'meta_access_token', ['class' => 'control-label col-xs-2']) ?>
+                <div class="col-xs-4">
+                    <?= form_input(['name' => 'meta_access_token', 'id' => 'meta_access_token', 'class' => 'form-control input-sm', 'value' => $config['meta_access_token'] ?? '']) ?>
+                </div>
+            </div>
+
+            <div class="form-group form-group-sm meta-fields" style="display: none;">
+                <?= form_label('Meta Phone Number ID', 'meta_phone_number_id', ['class' => 'control-label col-xs-2']) ?>
+                <div class="col-xs-4">
+                    <?= form_input(['name' => 'meta_phone_number_id', 'id' => 'meta_phone_number_id', 'class' => 'form-control input-sm', 'value' => $config['meta_phone_number_id'] ?? '']) ?>
+                </div>
+            </div>
+
+            <div class="form-group form-group-sm meta-fields" style="display: none;">
+                <?= form_label('Meta Receipt Template', 'meta_receipt_template', ['class' => 'control-label col-xs-2']) ?>
+                <div class="col-xs-4">
+                    <?= form_input(['name' => 'meta_receipt_template', 'id' => 'meta_receipt_template', 'class' => 'form-control input-sm', 'value' => $config['meta_receipt_template'] ?? '']) ?>
+                </div>
+            </div>
+
+            <div class="form-group form-group-sm meta-fields" style="display: none;">
+                <?= form_label('Meta Marketing Template', 'meta_marketing_template', ['class' => 'control-label col-xs-2']) ?>
+                <div class="col-xs-4">
+                    <?= form_input(['name' => 'meta_marketing_template', 'id' => 'meta_marketing_template', 'class' => 'form-control input-sm', 'value' => $config['meta_marketing_template'] ?? '']) ?>
                 </div>
             </div>
 
@@ -152,5 +200,15 @@
                 msg_src: "<?= lang('Config.msg_src_required') ?>"
             }
         }));
+
+        $('#whatsapp_api_provider').change(function() {
+            if ($(this).val() === 'meta') {
+                $('.twilio-fields').hide();
+                $('.meta-fields').show();
+            } else {
+                $('.meta-fields').hide();
+                $('.twilio-fields').show();
+            }
+        }).trigger('change');
     });
 </script>

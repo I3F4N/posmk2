@@ -31,6 +31,7 @@
  * @var string $comment
  * @var bool $print_after_sale
  * @var bool $email_receipt
+ * @var bool $whatsapp_receipt
  * @var bool $price_work_orders
  * @var string $invoice_number
  * @var int $cash_mode
@@ -530,6 +531,14 @@ helper('url');
                                     </label>
                                 </div>
                             <?php } ?>
+                            <?php if (!empty($customer_phone)) { ?>
+                                <div class="col-xs-6">
+                                    <label for="whatsapp_receipt" class="control-label checkbox">
+                                        <?= form_checkbox(['name' => 'whatsapp_receipt', 'id' => 'whatsapp_receipt', 'value' => 1, 'checked' => $whatsapp_receipt]) ?>
+                                        WhatsApp Receipt
+                                    </label>
+                                </div>
+                            <?php } ?>
                             <?php if ($mode == 'sale_work_order') { ?>
                                 <div class="col-xs-6">
                                     <label for="price_work_orders" class="control-label checkbox">
@@ -741,6 +750,12 @@ helper('url');
         $('#email_receipt').change(function() {
             $.post("<?= esc(site_url("$controller_name/setEmailReceipt")) ?>", {
                 email_receipt: $(this).is(':checked')
+            });
+        });
+
+        $('#whatsapp_receipt').change(function() {
+            $.post("<?= esc(site_url("$controller_name/setWhatsappReceipt")) ?>", {
+                whatsapp_receipt: $(this).is(':checked')
             });
         });
 

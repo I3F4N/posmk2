@@ -385,6 +385,16 @@ class Sales extends Secure_Controller
     }
 
     /**
+     * @return ResponseInterface
+     * @noinspection PhpUnused
+     */
+    public function postSetWhatsappReceipt(): ResponseInterface
+    {
+        $this->sale_lib->set_whatsapp_receipt($this->request->getPost('whatsapp_receipt', FILTER_SANITIZE_FULL_SPECIAL_CHARS));
+        return $this->response->setJSON(['success' => true]);
+    }
+
+    /**
      * Add a payment to the sale. Used in app/Views/sales/register.php
      *
      * @return ResponseInterface|string
@@ -722,6 +732,7 @@ class Sales extends Secure_Controller
         $data['print_after_sale'] = $this->session->get('sales_print_after_sale');
         $data['price_work_orders'] = $this->sale_lib->is_price_work_orders();
         $data['email_receipt'] = $this->sale_lib->is_email_receipt();
+        $data['whatsapp_receipt'] = $this->sale_lib->is_whatsapp_receipt();
         $customer_id = $this->sale_lib->get_customer();
         $invoice_number = $this->sale_lib->get_invoice_number();
         $data["invoice_number"] = $invoice_number;
@@ -917,21 +928,40 @@ class Sales extends Secure_Controller
                 $data['receipt_template_view'] = $receipt_template;
 
                 // Send WhatsApp PDF Receipt
-                if (!empty($customer_info->phone_number) && !empty($this->config['twilio_account_sid'])) {
-                    $view = \Config\Services::renderer();
-                    $html = $view->setData($data)->render('sales/receipt', $data);
-                    
-                    helper(['dompdf', 'file']);
-                    $pdf_content = create_pdf($html);
-                    $pdf_filename = 'receipt_' . $data['sale_id_num'] . '.pdf';
-                    $pdf_path = FCPATH . 'uploads/' . $pdf_filename;
-                    file_put_contents($pdf_path, $pdf_content);
+                if (!empty($customer_info->phone_number) && $data['whatsapp_receipt']) {
+                    $provider = $this->config['whatsapp_api_provider'] ?? 'twilio';
+                    $has_twilio = !empty($this->config['twilio_account_sid']);
+                    $has_meta = !empty($this->config['meta_access_token']);
 
-                    $whatsapp = new \App\Libraries\WhatsappLib();
-                    $receipt_link = base_url('uploads/' . $pdf_filename);
-                    $whatsapp_message = $this->config['whatsapp_receipt_message'] ?? 'Thank you for your purchase! Here is your receipt: ';
-                    $whatsapp_message .= "\n" . $receipt_link;
-                    $whatsapp->send($customer_info->phone_number, $whatsapp_message);
+                    if (($provider === 'twilio' && $has_twilio) || ($provider === 'meta' && $has_meta)) {
+                        $view = \Config\Services::renderer();
+                        $html = $view->setData($data)->render('sales/receipt', $data);
+                        
+                        helper(['dompdf', 'file']);
+                        $pdf_content = create_pdf($html);
+                        $pdf_filename = 'receipt_' . $data['sale_id_num'] . '.pdf';
+                        $pdf_path = FCPATH . 'uploads/' . $pdf_filename;
+                        file_put_contents($pdf_path, $pdf_content);
+
+                        $whatsapp = new \App\Libraries\WhatsappLib();
+                        $receipt_link = base_url('uploads/' . $pdf_filename);
+                        
+                        if ($provider === 'meta' && !empty($this->config['meta_receipt_template'])) {
+                            // Send via Meta Template
+                            $whatsapp->sendTemplate(
+                                $customer_info->phone_number, 
+                                $this->config['meta_receipt_template'], 
+                                'document', 
+                                $receipt_link, 
+                                $pdf_filename
+                            );
+                        } else {
+                            // Send via Twilio (or standard free-form Meta message)
+                            $whatsapp_message = $this->config['whatsapp_receipt_message'] ?? 'Thank you for your purchase! Here is your receipt: ';
+                            $whatsapp_message .= "\n" . $receipt_link;
+                            $whatsapp->send($customer_info->phone_number, $whatsapp_message, $receipt_link);
+                        }
+                    }
                 }
 
                 $this->sale_lib->clear_all();
@@ -1048,6 +1078,7 @@ class Sales extends Secure_Controller
             $data['first_name'] = $customer_info->first_name;
             $data['last_name'] = $customer_info->last_name;
             $data['customer_email'] = $customer_info->email;
+            $data['customer_phone'] = $customer_info->phone_number;
             $data['customer_address'] = $customer_info->address_1;
 
             if (!empty($customer_info->zip) || !empty($customer_info->city)) {
@@ -1264,6 +1295,7 @@ class Sales extends Secure_Controller
 
         $data['comment'] = $this->sale_lib->get_comment();
         $data['email_receipt'] = $this->sale_lib->is_email_receipt();
+        $data['whatsapp_receipt'] = $this->sale_lib->is_whatsapp_receipt();
 
         if ($customer_info && $this->config['customer_reward_enable']) {
             $data['payment_options'] = $this->sale->get_payment_options(true, true);

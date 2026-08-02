@@ -67,7 +67,28 @@ class Messages extends Secure_Controller
 
         if ($message_type === 'whatsapp') {
             $whatsapp = new \App\Libraries\WhatsappLib();
-            $response = $whatsapp->send($phone, $message, $media_url);
+            $provider = $this->config['whatsapp_api_provider'] ?? 'twilio';
+            
+            if ($provider === 'meta' && !empty($this->config['meta_marketing_template'])) {
+                $header_type = null;
+                $filename = null;
+                if ($media_url) {
+                    $ext = strtolower(pathinfo(parse_url($media_url, PHP_URL_PATH), PATHINFO_EXTENSION));
+                    $header_type = in_array($ext, ['jpg','jpeg','png','gif','webp']) ? 'image' : 'document';
+                    $filename = basename(parse_url($media_url, PHP_URL_PATH));
+                }
+                
+                $response = $whatsapp->sendTemplate(
+                    $phone, 
+                    $this->config['meta_marketing_template'],
+                    $header_type,
+                    $media_url,
+                    $filename,
+                    $message
+                );
+            } else {
+                $response = $whatsapp->send($phone, $message, $media_url);
+            }
         } elseif ($message_type === 'email') {
             $email_lib = new \App\Libraries\Email_lib();
             $emails = array_map('trim', explode(',', $phone));
@@ -117,7 +138,28 @@ class Messages extends Secure_Controller
 
         if ($message_type === 'whatsapp') {
             $whatsapp = new \App\Libraries\WhatsappLib();
-            $response = $whatsapp->send($phone, $message, $media_url);
+            $provider = $this->config['whatsapp_api_provider'] ?? 'twilio';
+            
+            if ($provider === 'meta' && !empty($this->config['meta_marketing_template'])) {
+                $header_type = null;
+                $filename = null;
+                if ($media_url) {
+                    $ext = strtolower(pathinfo(parse_url($media_url, PHP_URL_PATH), PATHINFO_EXTENSION));
+                    $header_type = in_array($ext, ['jpg','jpeg','png','gif','webp']) ? 'image' : 'document';
+                    $filename = basename(parse_url($media_url, PHP_URL_PATH));
+                }
+                
+                $response = $whatsapp->sendTemplate(
+                    $phone, 
+                    $this->config['meta_marketing_template'],
+                    $header_type,
+                    $media_url,
+                    $filename,
+                    $message
+                );
+            } else {
+                $response = $whatsapp->send($phone, $message, $media_url);
+            }
         } elseif ($message_type === 'email') {
             $email_lib = new \App\Libraries\Email_lib();
             $emails = array_map('trim', explode(',', $phone));

@@ -556,6 +556,37 @@ class Sale_lib
     }
 
     /**
+     * @param string $whatsapp_receipt
+     * @return void
+     */
+    public function set_whatsapp_receipt(string $whatsapp_receipt): void
+    {
+        $this->session->set('sales_whatsapp_receipt', $whatsapp_receipt);
+    }
+
+    /**
+     * @return void
+     */
+    public function clear_whatsapp_receipt(): void
+    {
+        $this->session->remove('sales_whatsapp_receipt');
+    }
+
+    /**
+     * @return bool
+     */
+    public function is_whatsapp_receipt(): bool
+    {
+        $mode = $this->config['whatsapp_receipt_mode'] ?? 'manual';
+        if ($mode == 'automatic') {
+            return true;
+        }
+        
+        return ($this->session->get('sales_whatsapp_receipt') == 'true'
+            || $this->session->get('sales_whatsapp_receipt') == '1');
+    }
+
+    /**
      * Multiple Payments
      */
     public function get_payments(): array
@@ -1418,6 +1449,7 @@ class Sale_lib
         $this->empty_cart();
         $this->clear_comment();
         $this->clear_email_receipt();
+        $this->clear_whatsapp_receipt();
         $this->clear_invoice_number();
         $this->clear_quote_number();
         $this->clear_work_order_number();
